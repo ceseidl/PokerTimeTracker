@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Definição do MSI — TimePoker
+  Build: ./build-msi.ps1
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="TimePoker"
+           Manufacturer="Seidl Software Ltda"
+           Version="1.0.0.0"
+           UpgradeCode="7B14F6E2-3A5C-4DA8-9C71-5E3F2A8B6D44"
+           Scope="perMachine"
+           Compressed="yes"
+           InstallerVersion="500">
+
+    <SummaryInformation Description="Cronômetro de torneios de poker ao vivo"
+                        Manufacturer="Seidl Software Ltda · Carlos Seidl" />
+
+    <MajorUpgrade DowngradeErrorMessage="Uma versão mais recente já está instalada." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon.ico" SourceFile="..\assets\app.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/ceseidl/PokerTimeTracker" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/ceseidl/PokerTimeTracker" />
+
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="TimePoker" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="TimePoker" />
+    </StandardDirectory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="StartMenuShortcut" Guid="A1F2C3D4-5E6F-4789-9ABC-DEF012345678">
+        <Shortcut Id="StartMenuLink"
+                  Name="TimePoker"
+                  Description="Cronômetro de torneios de poker"
+                  Target="[INSTALLFOLDER]TimePoker.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RemoveFolder Id="RemoveStartMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\SeidlSoftware\TimePoker"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <Component Id="StartMenuManual" Guid="B2F3C4D5-6E7F-489A-AABC-FEF112345678">
+        <Shortcut Id="StartMenuManualLink"
+                  Name="Manual do Usuário"
+                  Description="Manual completo do TimePoker"
+                  Target="[INSTALLFOLDER]docs\MANUAL.html"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\SeidlSoftware\TimePoker"
+                       Name="manualShortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="C3F4D5E6-7F8A-49AB-BCDE-FFE212345678">
+        <Shortcut Id="DesktopLink"
+                  Name="TimePoker"
+                  Description="Cronômetro de torneios de poker"
+                  Target="[INSTALLFOLDER]TimePoker.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\SeidlSoftware\TimePoker"
+                       Name="desktopShortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="Aplicativo" Level="1" Display="expand"
+             AllowAdvertise="no" AllowAbsent="no">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentRef Id="StartMenuManual" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+  </Package>
+</Wix>

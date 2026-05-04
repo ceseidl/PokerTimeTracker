@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TimePoker.Domain/TimePoker.Domain.csproj" />
+    <Project Path="src/TimePoker.Services/TimePoker.Services.csproj" />
+    <Project Path="src/TimePoker.Wpf/TimePoker.Wpf.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TimePoker.Domain.Tests/TimePoker.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

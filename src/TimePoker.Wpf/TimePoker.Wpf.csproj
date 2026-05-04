@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>TimePoker</AssemblyName>
+    <RootNamespace>TimePoker.Wpf</RootNamespace>
+    <ApplicationIcon>..\..\assets\app.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    <Product>TimePoker — Cronômetro de Torneio</Product>
+    <Authors>Carlos Seidl</Authors>
+    <Company>Seidl Software Ltda</Company>
+    <Copyright>© Seidl Software Ltda. Todos os direitos reservados.</Copyright>
+    <Description>Cronômetro e gerenciador de torneios de poker ao vivo (kiosk-style).</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimePoker.Domain\TimePoker.Domain.csproj" />
+    <ProjectReference Include="..\TimePoker.Services\TimePoker.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="NAudio" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\..\assets\logo.png" Link="logo.png" />
+    <Resource Include="..\..\assets\app.ico" Link="app.ico" />
+  </ItemGroup>
+
+</Project>

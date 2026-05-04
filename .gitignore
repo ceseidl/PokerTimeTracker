@@ -1,0 +1,70 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.vssettings
+*.vstemplate
+*.code-workspace
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Test results & coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+coverage.json
+coverage.opencover.xml
+coverage.cobertura.xml
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# Installer artifacts
+installer/out/
+installer/publish/
+installer/HarvestedFiles.wxs
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Office lock / temp files
+~$*
+.~lock.*
+
+# OneDrive sync artifacts
+*.tmp
+*.temp
+
+# Backup arquivos auto-gerados
+*~
+*.bak
+*.swp
+
+# Imagens grandes raiz (mockups históricos)
+/97a2a81a-*.png
+/b416c53e-*.png

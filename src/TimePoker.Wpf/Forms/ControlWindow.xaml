@@ -1,0 +1,250 @@
+<Window x:Class="TimePoker.Wpf.Forms.ControlWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TimePoker — Painel de Controle"
+        Width="1000" Height="720"
+        Background="{StaticResource BgBrush}"
+        FontFamily="Segoe UI"
+        Foreground="{StaticResource TextBrush}"
+        Icon="pack://application:,,,/app.ico"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />     <!-- header -->
+            <RowDefinition Height="Auto" />     <!-- timer + estado -->
+            <RowDefinition Height="Auto" />     <!-- botões principais -->
+            <RowDefinition Height="Auto" />     <!-- contadores -->
+            <RowDefinition Height="*" />        <!-- estrutura -->
+            <RowDefinition Height="Auto" />     <!-- rodapé / fullscreen -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource Bg2Brush}" Padding="14,10" CornerRadius="3">
+            <DockPanel>
+                <Image Source="pack://application:,,,/logo.png"
+                       Width="44" Height="44"
+                       DockPanel.Dock="Left" Margin="0,0,12,0" VerticalAlignment="Center" />
+                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <TextBlock Text="TIMEPOKER" Style="{StaticResource HeaderTitle}" />
+                    <TextBlock Text="Painel de Controle" Style="{StaticResource Tagline}" />
+                </StackPanel>
+                <TextBox Text="{Binding NomeTorneio, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{StaticResource CardBrush}"
+                         Foreground="{StaticResource GoldBrightBrush}"
+                         BorderBrush="{StaticResource GoldSoftBrush}"
+                         FontSize="14" FontWeight="Bold"
+                         Padding="6,4" MinWidth="280" VerticalAlignment="Center"
+                         HorizontalAlignment="Right" DockPanel.Dock="Right" />
+            </DockPanel>
+        </Border>
+
+        <!-- Timer + estado -->
+        <Border Grid.Row="1" Style="{StaticResource CardPanel}" Margin="0,12,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Margin="14,0">
+                    <TextBlock Text="TEMPO" Style="{StaticResource KpiLabel}" HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding TempoRestanteFormatado}"
+                               FontFamily="Consolas" FontSize="56" FontWeight="Bold"
+                               Foreground="{StaticResource GoldBrightBrush}" />
+                </StackPanel>
+                <StackPanel Margin="14,0" VerticalAlignment="Center">
+                    <TextBlock Text="NÍVEL" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding NivelAtualNumero}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+                <StackPanel Margin="14,0" VerticalAlignment="Center">
+                    <TextBlock Text="BLINDS" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding BlindsAtual}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+                <StackPanel Margin="14,0" VerticalAlignment="Center">
+                    <TextBlock Text="PRIZE POOL" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Style="{StaticResource KpiValue}">
+                        <Run Text="R$ " />
+                        <Run Text="{Binding PrizePool}" />
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Margin="14,0" VerticalAlignment="Center">
+                    <TextBlock Text="ESTADO" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding Estado}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Botões principais -->
+        <UniformGrid Grid.Row="2" Columns="6" Margin="0,12,0,0">
+            <Button Content="◀ Anterior"  Command="{Binding AnteriorCommand}"  Style="{StaticResource ButtonSecondary}" Margin="3" />
+            <Button Content="▶ Iniciar / Pausar"  Command="{Binding IniciarOuPausarCommand}" Style="{StaticResource ButtonPrimary}" Margin="3" />
+            <Button Content="Próximo ▶"   Command="{Binding ProximoCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3" />
+            <Button Content="− 1 min"     Command="{Binding RemoverUmMinutoCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3" />
+            <Button Content="+ 1 min"     Command="{Binding AdicionarUmMinutoCommand}" Style="{StaticResource ButtonSecondary}" Margin="3" />
+            <Button Content="↺ Reset"     Command="{Binding ResetarCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3" />
+        </UniformGrid>
+
+        <!-- Contadores -->
+        <UniformGrid Grid.Row="3" Columns="2" Margin="0,12,0,0">
+            <Border Style="{StaticResource CardPanel}" Margin="0,0,6,0">
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top">
+                        <TextBlock Text="JOGADORES" Style="{StaticResource KpiLabel}" VerticalAlignment="Center" />
+                        <Button Content="🃏 Importar PokerInimigos"
+                                Command="{Binding ImportarPokerInimigosCommand}"
+                                Style="{StaticResource ButtonSecondary}"
+                                Padding="6,2" MinHeight="0" Height="22" FontSize="10"
+                                HorizontalAlignment="Right" DockPanel.Dock="Right" />
+                    </DockPanel>
+                    <TextBlock Text="{Binding Jogadores}" Style="{StaticResource KpiValue}" VerticalAlignment="Center" />
+                    <Button Content="+" Command="{Binding AdicionarJogadorCommand}"
+                            Style="{StaticResource ButtonPrimary}" Width="56" Margin="6,0,0,0" DockPanel.Dock="Right" />
+                    <Button Content="−" Command="{Binding RemoverJogadorCommand}"
+                            Style="{StaticResource ButtonSecondary}" Width="56" Margin="6,0,0,0" DockPanel.Dock="Right" />
+                </DockPanel>
+            </Border>
+            <Border Style="{StaticResource CardPanel}" Margin="6,0,0,0">
+                <DockPanel>
+                    <TextBlock Text="REBUYS" Style="{StaticResource KpiLabel}" DockPanel.Dock="Top" />
+                    <TextBlock Text="{Binding Rebuys}" Style="{StaticResource KpiValue}" VerticalAlignment="Center" />
+                    <Button Content="+" Command="{Binding AdicionarRebuyCommand}"
+                            Style="{StaticResource ButtonPrimary}" Width="56" Margin="6,0,0,0" DockPanel.Dock="Right" />
+                    <Button Content="−" Command="{Binding RemoverRebuyCommand}"
+                            Style="{StaticResource ButtonSecondary}" Width="56" Margin="6,0,0,0" DockPanel.Dock="Right" />
+                </DockPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Lista de níveis (passou / atual / futuro) -->
+        <Border Grid.Row="4" Style="{StaticResource CardPanel}" Margin="0,12,0,0">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <TextBlock Text="ESTRUTURA" Style="{StaticResource KpiLabel}" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                        <Button Content="Turbo"      Command="{Binding CarregarTurboCommand}"      Style="{StaticResource ButtonSecondary}" Margin="3,0" Padding="10,4" MinHeight="28" />
+                        <Button Content="Padrão"     Command="{Binding CarregarPadraoCommand}"     Style="{StaticResource ButtonSecondary}" Margin="3,0" Padding="10,4" MinHeight="28" />
+                        <Button Content="Deep stack" Command="{Binding CarregarDeepStackCommand}"  Style="{StaticResource ButtonSecondary}" Margin="3,0" Padding="10,4" MinHeight="28" />
+                        <Button Content="Vazia"      Command="{Binding CarregarCustomizadaCommand}" Style="{StaticResource ButtonSecondary}" Margin="3,0" Padding="10,4" MinHeight="28" />
+                        <Border Width="1" Background="{StaticResource GoldSoftBrush}" Margin="6,2" />
+                        <Button Content="💾 Salvar como..." Command="{Binding SalvarEstruturaComoCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3,0" Padding="10,4" MinHeight="28" />
+                        <Button Content="📂 Carregar..."    Command="{Binding CarregarEstruturaSalvaCommand}" Style="{StaticResource ButtonSecondary}" Margin="3,0" Padding="10,4" MinHeight="28" />
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Toolbar de edição (atua sobre a linha selecionada) -->
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                    <Button Content="+ Nível"  Command="{Binding AdicionarNivelCommand}" Style="{StaticResource ButtonPrimary}"   Padding="8,4" MinHeight="26" />
+                    <Button Content="+ Break"  Command="{Binding AdicionarBreakCommand}" Style="{StaticResource ButtonSecondary}" Padding="8,4" MinHeight="26" Margin="6,0,0,0" />
+                    <Button Content="−"        Command="{Binding RemoverNivelCommand}"   CommandParameter="{Binding ElementName=GridNiveis, Path=SelectedItem}" Style="{StaticResource ButtonSecondary}" Padding="10,4" MinHeight="26" Margin="14,0,0,0" ToolTip="Remover linha selecionada" />
+                    <Button Content="▲"        Command="{Binding SubirNivelCommand}"     CommandParameter="{Binding ElementName=GridNiveis, Path=SelectedItem}" Style="{StaticResource ButtonSecondary}" Padding="10,4" MinHeight="26" Margin="6,0,0,0" ToolTip="Subir" />
+                    <Button Content="▼"        Command="{Binding DescerNivelCommand}"    CommandParameter="{Binding ElementName=GridNiveis, Path=SelectedItem}" Style="{StaticResource ButtonSecondary}" Padding="10,4" MinHeight="26" Margin="6,0,0,0" ToolTip="Descer" />
+                    <TextBlock Text="(clique numa linha pra editar SB / BB / Ante / Duração / Tipo)"
+                               Foreground="{StaticResource TextDimBrush}" FontSize="11" VerticalAlignment="Center" Margin="14,0,0,0" />
+                </StackPanel>
+                <DataGrid x:Name="GridNiveis"
+                          ItemsSource="{Binding Niveis}"
+                          AutoGenerateColumns="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="None"
+                          CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserResizeRows="False" CanUserReorderColumns="False"
+                          IsReadOnly="False"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          RowBackground="Transparent"
+                          AlternatingRowBackground="{StaticResource Card2Brush}"
+                          Foreground="{StaticResource TextBrush}"
+                          ColumnHeaderHeight="28">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource GreenDarkBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource GoldBrightBrush}" />
+                            <Setter Property="FontWeight" Value="SemiBold" />
+                            <Setter Property="Padding" Value="8,4" />
+                            <Setter Property="BorderBrush" Value="{StaticResource GoldSoftBrush}" />
+                            <Setter Property="BorderThickness" Value="0,0,1,1" />
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="Passou">
+                                    <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+                                    <Setter Property="Opacity" Value="0.7" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="Atual">
+                                    <Setter Property="Background" Value="{StaticResource GreenDarkBrush}" />
+                                    <Setter Property="Foreground" Value="{StaticResource GoldBrightBrush}" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding EhBreak}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource RedBrush}" />
+                                </DataTrigger>
+                                <!-- Seleção: vence as outras (último trigger). Borda dourada + fundo destacado. -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource GoldSoftBrush}" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Opacity" Value="1" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Padding" Value="8,4" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource GoldSoftBrush}" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#"
+                                            Binding="{Binding Numero}"
+                                            Width="40" IsReadOnly="True" />
+                        <DataGridComboBoxColumn Header="Tipo"
+                                                SelectedItemBinding="{Binding Tipo, UpdateSourceTrigger=PropertyChanged}"
+                                                Width="80">
+                            <DataGridComboBoxColumn.ItemsSource>
+                                <x:Array Type="{x:Type domain:TipoNivel}" xmlns:domain="clr-namespace:TimePoker.Domain;assembly=TimePoker.Domain">
+                                    <domain:TipoNivel>Jogo</domain:TipoNivel>
+                                    <domain:TipoNivel>Break</domain:TipoNivel>
+                                </x:Array>
+                            </DataGridComboBoxColumn.ItemsSource>
+                        </DataGridComboBoxColumn>
+                        <DataGridTextColumn Header="SB"       Binding="{Binding SmallBlind}"      Width="70" />
+                        <DataGridTextColumn Header="BB"       Binding="{Binding BigBlind}"        Width="70" />
+                        <DataGridTextColumn Header="Ante"     Binding="{Binding Ante}"            Width="60" />
+                        <DataGridTextColumn Header="Min"      Binding="{Binding DuracaoMinutos}"  Width="60" />
+                        <DataGridTextColumn Header="Status"   Binding="{Binding StatusTexto}"     Width="*" IsReadOnly="True" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Border>
+
+        <!-- Rodapé -->
+        <DockPanel Grid.Row="5" Margin="0,12,0,0">
+            <TextBlock Text="F11: fullscreen do display    ·    Espaço: pause    ·    ←/→: nível"
+                       Foreground="{StaticResource TextDimBrush}"
+                       FontSize="11" VerticalAlignment="Center" />
+            <CheckBox Content="🔔 Alarme"
+                      IsChecked="{Binding AlarmeHabilitado}"
+                      Foreground="{StaticResource TextBrush}"
+                      VerticalAlignment="Center" Margin="20,0,0,0" />
+            <Button Content="Testar"
+                    Command="{Binding TestarAlarmeCommand}"
+                    Style="{StaticResource ButtonSecondary}"
+                    Padding="8,2" MinHeight="0" Height="24" FontSize="11"
+                    VerticalAlignment="Center" Margin="6,0,0,0" />
+            <Button Content="Display fullscreen na 2ª tela"
+                    Click="AoClicarFullscreen"
+                    Style="{StaticResource ButtonSecondary}"
+                    HorizontalAlignment="Right" DockPanel.Dock="Right" />
+        </DockPanel>
+    </Grid>
+</Window>

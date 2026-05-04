@@ -1,0 +1,136 @@
+<Window x:Class="TimePoker.Wpf.Forms.DisplayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TimePoker — Display da TV"
+        Width="1280" Height="720"
+        Background="{StaticResource BgBrush}"
+        FontFamily="Segoe UI"
+        Foreground="{StaticResource TextBrush}"
+        Icon="pack://application:,,,/app.ico"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80" />     <!-- header com nome do torneio -->
+            <RowDefinition Height="*" />      <!-- centro: timer + blinds -->
+            <RowDefinition Height="180" />    <!-- rodapé: previous/next -->
+        </Grid.RowDefinitions>
+
+        <!-- Header (linha de cima, ocupa toda largura) -->
+        <Border Grid.Column="0" Grid.ColumnSpan="2"
+                Background="{StaticResource Bg2Brush}"
+                BorderBrush="{StaticResource GoldSoftBrush}"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <Image Source="pack://application:,,,/logo.png"
+                       Width="60" Height="60"
+                       HorizontalAlignment="Left" VerticalAlignment="Center"
+                       Margin="14,0,0,0" />
+                <TextBlock Text="{Binding NomeTorneio}"
+                           FontSize="32" FontWeight="Bold"
+                           Foreground="{StaticResource GoldBrightBrush}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Image Source="pack://application:,,,/logo.png"
+                       Width="60" Height="60"
+                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Margin="0,0,14,0" Opacity="0.85" />
+            </Grid>
+        </Border>
+
+        <!-- Sidebar esquerda com KPIs -->
+        <StackPanel Grid.Column="0" Grid.Row="1" Margin="20,30,12,20">
+            <Border Style="{StaticResource KpiCard}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="JOGADORES" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding Jogadores}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource KpiCard}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="REBUYS" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding Rebuys}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource KpiCard}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="PRIZE POOL" Style="{StaticResource KpiLabel}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="R$ " Style="{StaticResource KpiValue}" />
+                        <TextBlock Text="{Binding PrizePool}" Style="{StaticResource KpiValue}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource KpiCard}">
+                <StackPanel>
+                    <TextBlock Text="ATÉ O PRÓXIMO BREAK" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding TempoAteProximoBreakFormatado}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- Centro: cronômetro + blinds atual -->
+        <StackPanel Grid.Column="1" Grid.Row="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="{Binding TempoRestanteFormatado}"
+                       FontFamily="Consolas" FontWeight="Bold"
+                       FontSize="220"
+                       Foreground="{StaticResource GoldBrightBrush}"
+                       HorizontalAlignment="Center"
+                       LineHeight="220" />
+            <TextBlock Text="{Binding NivelAtualNumero, StringFormat='Nível {0}'}"
+                       FontSize="28"
+                       Foreground="{StaticResource TextMuteBrush}"
+                       HorizontalAlignment="Center"
+                       Margin="0,-10,0,8" />
+            <TextBlock Text="{Binding BlindsAtual}"
+                       FontFamily="Consolas" FontWeight="Bold"
+                       FontSize="86"
+                       Foreground="{StaticResource TextBrush}"
+                       HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Rodapé: previous + next -->
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
+              Background="{StaticResource Bg2Brush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="ANTERIOR"
+                           FontSize="14" FontWeight="Bold"
+                           Foreground="{StaticResource TextDimBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding BlindsAnterior}"
+                           FontFamily="Consolas" FontWeight="Bold"
+                           FontSize="48"
+                           Foreground="{StaticResource TextMuteBrush}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="PRÓXIMO"
+                           FontSize="14" FontWeight="Bold"
+                           Foreground="{StaticResource GoldBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding BlindsProximo}"
+                           FontFamily="Consolas" FontWeight="Bold"
+                           FontSize="48"
+                           HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource GoldBrightBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ProximoEhBreak}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource RedBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

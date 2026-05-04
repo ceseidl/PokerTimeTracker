@@ -1,0 +1,82 @@
+<Window x:Class="TimePoker.Wpf.Forms.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TimePoker"
+        Icon="pack://application:,,,/app.ico"
+        Width="540" Height="460"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="{StaticResource BgBrush}">
+    <Border BorderBrush="{StaticResource GoldBrush}" BorderThickness="2">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />     <!-- topo -->
+                <RowDefinition Height="140" />    <!-- logo -->
+                <RowDefinition Height="Auto" />   <!-- título -->
+                <RowDefinition Height="Auto" />   <!-- tagline -->
+                <RowDefinition Height="*" />
+                <RowDefinition Height="14" />     <!-- progress -->
+                <RowDefinition Height="22" />     <!-- carregando -->
+                <RowDefinition Height="14" />
+                <RowDefinition Height="1"  />     <!-- separador -->
+                <RowDefinition Height="22" />     <!-- criador -->
+                <RowDefinition Height="22" />     <!-- empresa -->
+                <RowDefinition Height="20" />     <!-- versão -->
+                <RowDefinition Height="20" />     <!-- subtítulo -->
+                <RowDefinition Height="14" />
+            </Grid.RowDefinitions>
+
+            <Image Grid.Row="1" Width="140" Height="140"
+                   Source="pack://application:,,,/logo.png"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+            <TextBlock Grid.Row="2" Text="TIMEPOKER"
+                       Foreground="{StaticResource GoldBrightBrush}"
+                       FontSize="22" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,8,0,0" />
+
+            <TextBlock Grid.Row="3" Text="— Mais que cartas. Um ritual. —"
+                       Foreground="{StaticResource GoldSoftBrush}"
+                       FontStyle="Italic" FontSize="11"
+                       HorizontalAlignment="Center" Margin="0,4,0,0" />
+
+            <ProgressBar Grid.Row="5" x:Name="Barra"
+                         Height="14" Width="380"
+                         Minimum="0" Maximum="100" Value="0"
+                         Background="{StaticResource CardBrush}"
+                         Foreground="{StaticResource GoldBrush}"
+                         BorderBrush="{StaticResource GoldSoftBrush}" />
+
+            <TextBlock Grid.Row="6" x:Name="LblCarregando"
+                       Foreground="{StaticResource TextMuteBrush}"
+                       FontFamily="Consolas" FontSize="11"
+                       HorizontalAlignment="Center" />
+
+            <Border Grid.Row="8" Width="440" Height="1"
+                    Background="{StaticResource GoldSoftBrush}" />
+
+            <TextBlock Grid.Row="9" Text="Criador: Carlos Seidl"
+                       Foreground="{StaticResource GoldBrightBrush}"
+                       FontSize="11" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,4,0,0" />
+
+            <TextBlock Grid.Row="10" Text="Empresa: Seidl Software Ltda"
+                       Foreground="{StaticResource TextBrush}"
+                       FontSize="11"
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Grid.Row="11" x:Name="LblVersao"
+                       Foreground="{StaticResource TextDimBrush}"
+                       FontStyle="Italic" FontSize="10"
+                       HorizontalAlignment="Center" Margin="0,4,0,0" />
+
+            <TextBlock Grid.Row="12" Text="Cronômetro de Torneio"
+                       Foreground="{StaticResource GoldSoftBrush}"
+                       FontSize="10"
+                       HorizontalAlignment="Center" />
+        </Grid>
+    </Border>
+</Window>

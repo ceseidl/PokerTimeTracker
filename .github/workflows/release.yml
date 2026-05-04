@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versão (ex: 1.0.0.0)'
+        required: true
+        default: '1.0.0.0'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $v = "${{ github.event.inputs.version }}"
+          } else {
+            $v = "${{ github.ref_name }}".TrimStart('v')
+          }
+          if ($v -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') { throw "Versão inválida: $v" }
+          if ($v -notmatch '^\d+\.\d+\.\d+\.\d+$') { $v = "$v.0" }
+          $short = ($v -split '\.')[0..2] -join '.'
+          "version=$v"     | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "short=$short"   | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Version: $v (short: $short)"
+
+      - name: Restore + Test
+        run: |
+          dotnet restore TimePoker.slnx
+          dotnet test TimePoker.slnx --configuration Release --verbosity normal
+
+      - name: Install WiX
+        run: |
+          dotnet tool install --global wix --version 6.0.1
+          wix extension add -g WixToolset.UI.wixext/6.0.1
+
+      - name: Build MSI
+        shell: pwsh
+        run: ./installer/build-msi.ps1 -Version "${{ steps.ver.outputs.version }}"
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimePoker-${{ steps.ver.outputs.version }}-msi
+          path: installer/out/TimePoker-${{ steps.ver.outputs.version }}.msi
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: TimePoker ${{ steps.ver.outputs.short }}
+          body: |
+            ## TimePoker ${{ steps.ver.outputs.short }}
+
+            Veja o [CHANGELOG](CHANGELOG.md) para detalhes.
+
+            ### Instalação
+            Baixe o MSI abaixo e execute. Um atalho será criado no menu Iniciar e na área de trabalho.
+          files: installer/out/TimePoker-${{ steps.ver.outputs.version }}.msi
+          draft: false
+          prerelease: false
