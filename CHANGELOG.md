@@ -7,6 +7,17 @@ versionamento [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [1.0.1] — 2026-05-12
+
+### Corrigido
+- **`installer/build-msi.ps1` preserva estrutura de subpastas.** O harvest
+  emitia todo `<Component>` sem `Subdirectory`, então o WiX achatava toda
+  a árvore em `INSTALLFOLDER`. Bug descoberto no PokerInimigos (mesmo
+  script-base) — corrigido aqui antes de virar problema real para usuários
+  que instalarem este MSI.
+
+---
+
 ## [1.0.0] — 2026-05-04
 
 Primeira release pública. MVP completo (11/11 features).

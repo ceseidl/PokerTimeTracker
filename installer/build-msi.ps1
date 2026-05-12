@@ -12,7 +12,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$Version = "1.0.0.0",
+    [string]$Version = "1.0.1.0",
     [switch]$SkipPublish
 )
 
@@ -64,10 +64,17 @@ $files = Get-ChildItem -Path $publishDir -Recurse -File
 $idx = 0
 foreach ($f in $files) {
     $idx++
+    $relative = $f.FullName.Substring($publishDir.Length).TrimStart('\','/')
+    # subpasta relativa ao INSTALLFOLDER (sem o nome do arquivo)
+    $subdir = [System.IO.Path]::GetDirectoryName($relative)
     $compId = "C_" + ([System.Guid]::NewGuid().ToString('N'))
     $fileId = "F_" + ([System.Guid]::NewGuid().ToString('N'))
     $guid   = [System.Guid]::NewGuid().ToString().ToUpper()
-    [void]$sb.AppendLine("      <Component Id=`"$compId`" Guid=`"$guid`" Bitness=`"always64`">")
+    if ([string]::IsNullOrEmpty($subdir)) {
+        [void]$sb.AppendLine("      <Component Id=`"$compId`" Guid=`"$guid`" Bitness=`"always64`">")
+    } else {
+        [void]$sb.AppendLine("      <Component Id=`"$compId`" Guid=`"$guid`" Bitness=`"always64`" Subdirectory=`"$subdir`">")
+    }
     [void]$sb.AppendLine("        <File Id=`"$fileId`" Source=`"$($f.FullName)`" KeyPath=`"yes`" />")
     [void]$sb.AppendLine('      </Component>')
 }
