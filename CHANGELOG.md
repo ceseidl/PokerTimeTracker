@@ -7,6 +7,23 @@ versionamento [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [1.1.0] — 2026-05-16
+
+### Adicionado
+- **Integração com o gerenciador (Inimigos do Royal Flush).** TimePoker observa
+  `%APPDATA%\TimePoker\bridge.json` via `FileSystemWatcher` e atualiza ao vivo
+  `Jogadores`, `Rebuys`, `BuyIn` e `ValorRebuy` quando o gerenciador salva uma
+  rodada. Prize pool é recalculado automaticamente. Se o gerenciador não estiver
+  rodando, o timer continua funcionando normal — atualização é best-effort.
+
+### Corrigido
+- **Janelas se ajustam à área útil do monitor ao abrir.** Em notebooks 1366×768
+  com taskbar, a janela de Controle ficava cortada. Agora `ControlWindow` e
+  `DisplayWindow` redimensionam para 85% da área útil do monitor onde abriram,
+  respeitando `MinWidth`/`MinHeight`.
+
+---
+
 ## [1.0.1] — 2026-05-12
 
 ### Corrigido

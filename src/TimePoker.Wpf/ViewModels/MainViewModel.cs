@@ -3,6 +3,7 @@ using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TimePoker.Domain;
+using TimePoker.Services.Integration;
 using TimePoker.Services.Persistence;
 using TimePoker.Wpf.Services;
 
@@ -47,6 +48,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
     private readonly SessionStore _sessao;
     private readonly AlarmeService _alarme;
+    private readonly BridgeWatcher _bridge;
 
     /// <summary>Liga/desliga o alarme de fim de nível.</summary>
     [ObservableProperty] private bool _alarmeHabilitado = true;
@@ -93,8 +95,35 @@ public partial class MainViewModel : ObservableObject, IDisposable
                                    restaurar.Estado);
         }
 
+        // Bridge: recebe Jogadores/Rebuys/BuyIn/ValorRebuy do gerenciador.
+        // Aplica o snapshot já existente (se houver) na inicialização e fica
+        // ouvindo atualizações em tempo real.
+        _bridge = new BridgeWatcher();
+        _bridge.SnapshotRecebido += AoReceberSnapshot;
+        var inicial = _bridge.LerAtual();
+        if (inicial != null) AplicarSnapshot(inicial, atualizarUI: false);
+
         ReconstruirListaNiveis();
         AtualizarPropriedades();
+    }
+
+    private void AoReceberSnapshot(BridgeSnapshot snapshot)
+    {
+        // FileSystemWatcher dispara em thread do pool — precisa marshalar para a UI
+        // antes de mexer em ObservableProperty.
+        System.Windows.Application.Current?.Dispatcher.BeginInvoke(
+            () => AplicarSnapshot(snapshot, atualizarUI: true));
+    }
+
+    private void AplicarSnapshot(BridgeSnapshot s, bool atualizarUI)
+    {
+        _torneio.Jogadores = s.Jogadores;
+        _torneio.Rebuys = s.Rebuys;
+        // BuyIn/ValorRebuy só sobrescrevem se vierem positivos — evita zerar a
+        // estrutura quando o esquema ainda não foi escolhido no gerenciador.
+        if (s.BuyIn > 0) _torneio.Estrutura.BuyIn = s.BuyIn;
+        if (s.ValorRebuy > 0) _torneio.Estrutura.ValorRebuy = s.ValorRebuy;
+        if (atualizarUI) AtualizarPropriedades();
     }
 
     public Torneio Torneio => _torneio;
@@ -442,5 +471,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         _ticker.Stop();
         _autoSaveTimer.Stop();
         _cronometro.FimDeNivel -= AoFimDeNivel;
+        _bridge.SnapshotRecebido -= AoReceberSnapshot;
+        _bridge.Dispose();
     }
 }

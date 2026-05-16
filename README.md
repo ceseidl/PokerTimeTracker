@@ -9,7 +9,7 @@ exibição em TV via HDMI, com painel de controle separado para o anfitrião.
 
 ---
 
-## ✨ Recursos (v1.0.0)
+## ✨ Recursos (v1.1.0)
 
 - ⏱️ **Cronômetro** com tick de 1s, pausar/retomar, ±1min, reset
 - 🪧 **Display dedicado** (segunda janela) para projetar em TV — F11 fullscreen
@@ -18,6 +18,9 @@ exibição em TV via HDMI, com painel de controle separado para o anfitrião.
 - 🎚️ **Pré-sets**: Turbo, Padrão, Deep Stack, Customizada (vazia)
 - 💾 **Salvar/carregar estruturas nomeadas** em `%APPDATA%\TimePoker\structures\`
 - 👥 **Importar PokerInimigos**: lê `participantes.md` da pasta vizinha
+- 🔗 **Sincronia ao vivo com o gerenciador**: ao salvar uma rodada no
+  Inimigos do Royal Flush, `Jogadores`/`Rebuys`/`BuyIn`/`ValorRebuy` atualizam
+  automaticamente aqui via `%APPDATA%\TimePoker\bridge.json`
 - 💰 **Prize pool calculado**: `(Jogadores × BuyIn) + (Rebuys × ValorRebuy)`
 - 🔢 **Contadores** de jogadores e rebuys
 - 🔔 **Alarme sonoro** ao virar nível (3 beeps via NAudio)
