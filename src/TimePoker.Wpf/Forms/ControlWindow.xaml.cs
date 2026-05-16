@@ -20,6 +20,24 @@ public partial class ControlWindow : Window
     {
         InitializeComponent();
         KeyDown += AoTeclar;
+        Loaded += AjustarAoMonitor;
+    }
+
+    /// <summary>
+    /// Redimensiona a janela proporcionalmente à área útil do monitor onde ela abriu.
+    /// Garante que cabe em notebooks pequenos (1366x768 com taskbar) e aproveita
+    /// telas maiores sem ficar com sobras enormes. Respeita o MinWidth/MinHeight do XAML.
+    /// </summary>
+    private void AjustarAoMonitor(object? sender, RoutedEventArgs e)
+    {
+        var tela = System.Windows.Forms.Screen.FromHandle(
+            new System.Windows.Interop.WindowInteropHelper(this).Handle);
+        var area = tela.WorkingArea;  // já desconta taskbar
+        // 85% da área útil, capado pra não passar do conteúdo
+        Width = Math.Max(MinWidth, Math.Min(area.Width * 0.85, 1400));
+        Height = Math.Max(MinHeight, Math.Min(area.Height * 0.95, 900));
+        Left = area.Left + (area.Width - Width) / 2;
+        Top = area.Top + (area.Height - Height) / 2;
     }
 
     private void AoTeclar(object? sender, KeyEventArgs e)

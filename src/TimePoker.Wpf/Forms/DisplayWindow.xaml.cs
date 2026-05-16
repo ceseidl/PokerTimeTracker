@@ -18,6 +18,24 @@ public partial class DisplayWindow : Window
     {
         InitializeComponent();
         KeyDown += AoTeclar;
+        Loaded += AjustarAoMonitor;
+    }
+
+    /// <summary>
+    /// Redimensiona proporcionalmente ao monitor onde abriu. Em TV grande
+    /// aproveita melhor o espaço; em notebook não estoura a área útil.
+    /// O modo fullscreen (F11) ignora esses limites — usa o monitor inteiro.
+    /// </summary>
+    private void AjustarAoMonitor(object? sender, RoutedEventArgs e)
+    {
+        if (_fullscreen) return;
+        var tela = System.Windows.Forms.Screen.FromHandle(
+            new System.Windows.Interop.WindowInteropHelper(this).Handle);
+        var area = tela.WorkingArea;
+        Width = Math.Max(MinWidth, area.Width * 0.85);
+        Height = Math.Max(MinHeight, area.Height * 0.95);
+        Left = area.Left + (area.Width - Width) / 2;
+        Top = area.Top + (area.Height - Height) / 2;
     }
 
     private void AoTeclar(object? sender, KeyEventArgs e)
