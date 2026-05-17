@@ -141,6 +141,33 @@ public class CronometroTests
     }
 
     [Fact]
+    public void RestaurarDecorrido_DefineTempoTotal()
+    {
+        var c = new Cronometro(TorneioCom(Nivel.DeJogo(25, 50, 10)));
+        c.RestaurarDecorrido(TimeSpan.FromMinutes(42));
+        Assert.Equal(TimeSpan.FromMinutes(42), c.Decorrido);
+    }
+
+    [Fact]
+    public void RestaurarDecorrido_NaoAceitaNegativo()
+    {
+        var c = new Cronometro(TorneioCom(Nivel.DeJogo(25, 50, 10)));
+        c.RestaurarDecorrido(TimeSpan.FromSeconds(-30));
+        Assert.Equal(TimeSpan.Zero, c.Decorrido);
+    }
+
+    [Fact]
+    public void RestaurarDecorrido_PreservadoApos_Tick()
+    {
+        var c = new Cronometro(TorneioCom(Nivel.DeJogo(25, 50, 10)));
+        c.RestaurarDecorrido(TimeSpan.FromMinutes(5));
+        c.Iniciar();
+        c.Tick(TimeSpan.FromMinutes(2));
+        // Decorrido = base restaurado + tempo do tick
+        Assert.Equal(TimeSpan.FromMinutes(7), c.Decorrido);
+    }
+
+    [Fact]
     public void Resetar_VoltaParaNivelZero_E_Aguardando()
     {
         var c = new Cronometro(TorneioCom(
