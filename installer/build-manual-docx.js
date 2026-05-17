@@ -90,7 +90,7 @@ const doc = new Document({
     },
     children: [
       new Paragraph({ style: "Title", children: [new TextRun({ text: "TimePoker" })] }),
-      new Paragraph({ style: "Subtitle", children: [new TextRun({ text: "Manual do Usuário — Versão 1.2.0" })] }),
+      new Paragraph({ style: "Subtitle", children: [new TextRun({ text: "Manual do Usuário — Versão 1.3.0" })] }),
       new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 480 },
         children: [new TextRun({ text: "Cronômetro de torneios de poker ao vivo", italics: true, color: GREY })] }),
 
@@ -111,7 +111,7 @@ const doc = new Document({
       step("Abra o navegador no link abaixo."),
       link("https://github.com/ceseidl/PokerTimeTracker/releases/latest", "https://github.com/ceseidl/PokerTimeTracker/releases/latest"),
       step("Procure a seção \"Assets\" (Anexos) no final da página."),
-      step("Clique no arquivo que termina em .msi — algo como TimePoker-1.2.0.0.msi."),
+      step("Clique no arquivo que termina em .msi — algo como TimePoker-1.3.0.0.msi."),
       step("Aguarde o download terminar."),
       note("Se o navegador avisar \"este arquivo não é baixado com frequência\", clique em Manter / Confiar — é seguro."),
 
@@ -190,8 +190,8 @@ const doc = new Document({
 
       heading("8. Problemas comuns", HeadingLevel.HEADING_1),
 
-      heading("\"Esqueci de pausar e parei o jogo, perdi o tempo?\"", HeadingLevel.HEADING_3),
-      p("Não. Reabra o TimePoker — ele detecta a sessão anterior e pergunta se quer restaurar. Diga Sim e o tempo volta como Pausado (por segurança), você só clica Iniciar quando quiser continuar."),
+      heading("\"Fechei sem querer (X ou crash) no meio da partida, perdi o tempo?\"", HeadingLevel.HEADING_3),
+      p("Não. Reabra o TimePoker — ele retoma a partida automaticamente (sem popup) na mesma rodada e nível. Se estava Rodando, o tempo que o app ficou fechado é descontado do nível atual e somado ao DECORRIDO. A partida volta como Pausada — você só clica Iniciar quando quiser continuar."),
 
       heading("\"O alarme não está tocando.\"", HeadingLevel.HEADING_3),
       p("Confira se o 🔔 Alarme está marcado. Se sim, vá em Configurações do Windows → Som → Saída e veja se o som está saindo para o dispositivo certo (TV vs Notebook)."),

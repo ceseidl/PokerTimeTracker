@@ -1,6 +1,6 @@
 # Manual do Usuário — TimePoker
 
-> Versão 1.2.0 · Cronômetro de torneios de poker ao vivo
+> Versão 1.3.0 · Cronômetro de torneios de poker ao vivo
 
 ---
 
@@ -36,8 +36,11 @@ deixar a janela de **Controle** no notebook do anfitrião.
 ## 2. Primeira execução
 
 Ao abrir, aparece um splash com a logo. Em seguida, as duas janelas surgem.
-Se o app detectar uma **sessão anterior**, ele pergunta se quer **restaurar**
-(útil quando trava ou você fecha sem querer no meio do torneio).
+
+Se você fechou a partida em andamento (X ou crash) com o cronômetro
+**Rodando** ou **Pausado**, o app **retoma automaticamente** — sem popup.
+Quando estava Rodando, o tempo que o app ficou fechado é descontado do nível
+atual (e somado ao DECORRIDO). Veja §11.
 
 ## 3. Janela de Controle
 
@@ -98,9 +101,8 @@ Janela limpa, fonte gigante, alto contraste:
 - Blinds e ante
 - Sidebar com KPIs: jogadores, rebuys, prize pool, tempo até o próximo break
 
-**Controles discretos no canto superior direito** (semitransparentes; passe o
-mouse para destacar) — úteis quando o anfitrião tem **só uma tela** e quer
-operar sem alternar para a janela de Controle:
+**Controles no canto superior direito** — úteis quando o anfitrião tem
+**só uma tela** e quer operar sem alternar para a janela de Controle:
 - `⏯` — Iniciar / Pausar
 - `🏁 Finalizar` — envia o tempo total da partida ao gerenciador
 
@@ -205,7 +207,9 @@ O gerenciador pode estar **fechado** quando você clica 🏁 — o arquivo fica
 salvo até a próxima sobrescrita.
 
 O contador **DECORRIDO** no Painel de Controle mostra esse mesmo tempo em
-tempo real (HH:MM:SS). Pauses **não contam**.
+tempo real (HH:MM:SS). Pauses **não contam**. O valor **persiste entre
+reaberturas** — se fechar com o cronômetro Rodando, o tempo que o app
+ficou fechado também entra no DECORRIDO ao reabrir.
 
 ## 10. Alarme
 
@@ -224,16 +228,23 @@ A cada virada de nível, toca **3 beeps**.
 
 O app salva um snapshot da sessão:
 
-- A cada **1 minuto**
+- A cada **1 minuto** enquanto roda
 - Após **cada ação** (mudar nível, ajustar tempo, etc.)
+- No fechamento gracioso (X) — snapshot final com timestamp
 
 Localização: `%APPDATA%\TimePoker\session.json`
 
-Ao reabrir o app, se houver snapshot válido, ele pergunta:
-*"Encontramos uma sessão anterior. Restaurar?"*
+Ao reabrir, o comportamento é automático — **sem popup**:
 
-> Por segurança, o estado **Rodando** sempre volta como **Pausado** —
-> você confirma manualmente que quer retomar.
+| Estado no fechamento | Comportamento na reabertura |
+|---|---|
+| **Rodando** | Retoma como Pausado, descontando o tempo offline do nível atual e somando ao DECORRIDO |
+| **Pausado** | Retoma exatamente onde parou |
+| **Aguardando** (não iniciado) | Descarta — começa limpo |
+| **Encerrado** | Descarta — começa limpo |
+
+Para zerar manualmente (recomeçar do zero antes da próxima noite), basta usar
+o botão **↺ Reset** no painel de Controle ou apagar `session.json`.
 
 ## 12. Atalhos de teclado
 
