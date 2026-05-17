@@ -9,13 +9,19 @@ exibição em TV via HDMI, com painel de controle separado para o anfitrião.
 
 ---
 
-## ✨ Recursos (v1.1.0)
+## ✨ Recursos (v1.2.0)
 
 - ⏱️ **Cronômetro** com tick de 1s, pausar/retomar, ±1min, reset
+- ⏲️ **Tempo total decorrido** (DECORRIDO) — exibido no painel; pauses não contam
+- 🏁 **Finalizar rodada** — envia o tempo total ao gerenciador via
+  `%APPDATA%\TimePoker\timer-status.json` (não fecha a rodada lá, só informa)
 - 🪧 **Display dedicado** (segunda janela) para projetar em TV — F11 fullscreen
+- 🕹️ **Controles discretos no Display** — `⏯` e `🏁 Finalizar` no canto superior
+  direito, semitransparentes, úteis quando há só uma tela
 - 🎛️ **Painel de controle** separado: navegar níveis, ajustar tempo, configurar estrutura
 - 📋 **Editor de estrutura ao vivo**: adicionar/remover/reordenar níveis e breaks
-- 🎚️ **Pré-sets**: Turbo, Padrão, Deep Stack, Customizada (vazia)
+- 🎚️ **Pré-sets**: Turbo, Padrão, Deep Stack, **Inimigos do Royal Flush**
+  (estrutura oficial da Liga — 6 níveis 20min + 2 breaks), Customizada
 - 💾 **Salvar/carregar estruturas nomeadas** em `%APPDATA%\TimePoker\structures\`
 - 👥 **Importar PokerInimigos**: lê `participantes.md` da pasta vizinha
 - 🔗 **Sincronia ao vivo com o gerenciador**: ao salvar uma rodada no

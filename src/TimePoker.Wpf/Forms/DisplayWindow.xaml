@@ -93,6 +93,36 @@
                        HorizontalAlignment="Center" />
         </StackPanel>
 
+        <!-- Botões discretos no canto superior direito do header. Úteis quando o
+             anfitrião está sem 2ª tela e só vê o Display. Opacidade baixa por padrão
+             pra não competir com o cronômetro; hover destaca. -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Margin="0,0,84,4">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Opacity" Value="0.35" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Button Content="⏯"
+                    Command="{Binding IniciarOuPausarCommand}"
+                    Style="{StaticResource ButtonSecondary}"
+                    FontSize="14" Padding="10,2" MinHeight="0" Height="26"
+                    ToolTip="Iniciar / Pausar (Espaço)" />
+            <Button Content="🏁 Finalizar"
+                    Command="{Binding FinalizarRodadaCommand}"
+                    Style="{StaticResource ButtonSecondary}"
+                    FontSize="12" Padding="10,2" MinHeight="0" Height="26"
+                    Margin="6,0,0,0"
+                    ToolTip="Envia o tempo total ao gerenciador" />
+        </StackPanel>
+
         <!-- Rodapé: previous + next -->
         <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
               Background="{StaticResource Bg2Brush}">

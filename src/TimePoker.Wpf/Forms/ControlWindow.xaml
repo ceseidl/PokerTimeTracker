@@ -67,17 +67,23 @@
                     <TextBlock Text="ESTADO" Style="{StaticResource KpiLabel}" />
                     <TextBlock Text="{Binding Estado}" Style="{StaticResource KpiValue}" />
                 </StackPanel>
+                <StackPanel Margin="14,0" VerticalAlignment="Center">
+                    <TextBlock Text="DECORRIDO" Style="{StaticResource KpiLabel}" />
+                    <TextBlock Text="{Binding TempoTotalDecorridoFormatado}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
             </StackPanel>
         </Border>
 
         <!-- Botões principais -->
-        <UniformGrid Grid.Row="2" Columns="6" Margin="0,12,0,0">
+        <UniformGrid Grid.Row="2" Columns="7" Margin="0,12,0,0">
             <Button Content="◀ Anterior"  Command="{Binding AnteriorCommand}"  Style="{StaticResource ButtonSecondary}" Margin="3" />
             <Button Content="▶ Iniciar / Pausar"  Command="{Binding IniciarOuPausarCommand}" Style="{StaticResource ButtonPrimary}" Margin="3" />
             <Button Content="Próximo ▶"   Command="{Binding ProximoCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3" />
             <Button Content="− 1 min"     Command="{Binding RemoverUmMinutoCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3" />
             <Button Content="+ 1 min"     Command="{Binding AdicionarUmMinutoCommand}" Style="{StaticResource ButtonSecondary}" Margin="3" />
             <Button Content="↺ Reset"     Command="{Binding ResetarCommand}"   Style="{StaticResource ButtonSecondary}" Margin="3" />
+            <Button Content="🏁 Finalizar" Command="{Binding FinalizarRodadaCommand}" Style="{StaticResource ButtonPrimary}" Margin="3"
+                    ToolTip="Envia o tempo total da rodada ao gerenciador (não finaliza a rodada lá)" />
         </UniformGrid>
 
         <!-- Contadores -->
