@@ -7,6 +7,33 @@ versionamento [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [1.3.0] — 2026-05-16
+
+### Adicionado
+- **Title bar customizado (WindowChrome)** nas duas janelas (Control e Display)
+  — botões min/max/close integrados ao tema escuro+dourado, sem a barra branca
+  padrão do Windows. Hover dourado no min/max, vermelho no close.
+- **Recovery automático sem popup**: se o app fecha (X ou crash) com a partida
+  Rodando ou Pausada, a próxima abertura retoma direto. Se estava Rodando, o
+  tempo offline é descontado do nível atual.
+- **Persistência do tempo total decorrido** (`DECORRIDO`) entre reaberturas —
+  inclui o tempo offline quando estava Rodando.
+
+### Alterado
+- Default do nome do torneio: `Poker Night` (era `Saturday Night Poker`).
+- "Nome do torneio" no header virou label (TextBlock dourado) em vez de TextBox
+  editável — visual mais limpo no painel de controle.
+- Botões "⏯" e "🏁 Finalizar" no Display ficam sempre 100% visíveis (antes
+  eram 35% de opacidade até hover).
+
+### Corrigido
+- Botão **"Display fullscreen na 2ª tela"** agora recria a janela do Display
+  quando ela foi fechada antes (antes não fazia nada).
+- Recovery não pede mais confirmação para sessões com Estado=Aguardando ou
+  Estado=Encerrado — descarta automaticamente.
+
+---
+
 ## [1.2.1] — 2026-05-16
 
 ### Adicionado

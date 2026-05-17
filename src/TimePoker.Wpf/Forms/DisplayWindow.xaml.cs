@@ -19,7 +19,14 @@ public partial class DisplayWindow : Window
         InitializeComponent();
         KeyDown += AoTeclar;
         Loaded += AjustarAoMonitor;
+        TitleBarBehavior.Attach(this);
+        StateChanged += (_, _) =>
+            BtnMaxRestore.Content = WindowState == WindowState.Maximized ? "" : "";
     }
+
+    private void AoMinimizar(object sender, RoutedEventArgs e) => TitleBarBehavior.OnMinimize(this);
+    private void AoMaximizarRestaurar(object sender, RoutedEventArgs e) => TitleBarBehavior.OnMaxRestore(this);
+    private void AoFechar(object sender, RoutedEventArgs e) => TitleBarBehavior.OnClose(this);
 
     /// <summary>
     /// Redimensiona proporcionalmente ao monitor onde abriu. Em TV grande

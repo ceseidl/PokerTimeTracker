@@ -124,6 +124,12 @@ public sealed class Cronometro
         }
     }
 
+    /// <summary>Restaura o total decorrido (preserva entre reaberturas).</summary>
+    public void RestaurarDecorrido(TimeSpan decorrido)
+    {
+        _decorrido = decorrido < TimeSpan.Zero ? TimeSpan.Zero : decorrido;
+    }
+
     private void ResetarTempoDoNivel()
     {
         _restante = _torneio.NivelAtual()?.Duracao ?? TimeSpan.Zero;

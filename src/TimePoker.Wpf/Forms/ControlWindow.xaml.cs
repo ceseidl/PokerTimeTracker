@@ -21,7 +21,14 @@ public partial class ControlWindow : Window
         InitializeComponent();
         KeyDown += AoTeclar;
         Loaded += AjustarAoMonitor;
+        TitleBarBehavior.Attach(this);
+        StateChanged += (_, _) =>
+            BtnMaxRestore.Content = WindowState == WindowState.Maximized ? "" : "";
     }
+
+    private void AoMinimizar(object sender, RoutedEventArgs e) => TitleBarBehavior.OnMinimize(this);
+    private void AoMaximizarRestaurar(object sender, RoutedEventArgs e) => TitleBarBehavior.OnMaxRestore(this);
+    private void AoFechar(object sender, RoutedEventArgs e) => TitleBarBehavior.OnClose(this);
 
     /// <summary>
     /// Redimensiona a janela proporcionalmente à área útil do monitor onde ela abriu.
@@ -67,6 +74,13 @@ public partial class ControlWindow : Window
 
         var display = System.Windows.Application.Current.Windows
             .OfType<DisplayWindow>().FirstOrDefault();
-        display?.EntrarFullscreenEm(alvo);
+        if (display == null)
+        {
+            // Display foi fechado pelo usuário — recria com o mesmo DataContext
+            // do Control pra continuar refletindo o estado do timer.
+            display = new DisplayWindow { DataContext = DataContext, Owner = this };
+            display.Show();
+        }
+        display.EntrarFullscreenEm(alvo);
     }
 }

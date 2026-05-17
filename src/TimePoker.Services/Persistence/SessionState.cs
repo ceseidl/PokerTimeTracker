@@ -15,6 +15,7 @@ public sealed class SessionState
     public Estrutura Estrutura { get; set; } = new();
     public int IndiceNivelAtual { get; set; }
     public long TempoRestanteTicks { get; set; }
+    public long TempoTotalDecorridoTicks { get; set; }
     public EstadoTorneio Estado { get; set; } = EstadoTorneio.Aguardando;
     public int Jogadores { get; set; }
     public int Rebuys { get; set; }
@@ -23,5 +24,11 @@ public sealed class SessionState
     {
         get => TimeSpan.FromTicks(TempoRestanteTicks);
         set => TempoRestanteTicks = value.Ticks;
+    }
+
+    public TimeSpan TempoTotalDecorrido
+    {
+        get => TimeSpan.FromTicks(TempoTotalDecorridoTicks);
+        set => TempoTotalDecorridoTicks = value.Ticks;
     }
 }

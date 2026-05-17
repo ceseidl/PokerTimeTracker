@@ -10,10 +10,10 @@
     <AssemblyName>TimePoker</AssemblyName>
     <RootNamespace>TimePoker.Wpf</RootNamespace>
     <ApplicationIcon>..\..\assets\app.ico</ApplicationIcon>
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
-    <InformationalVersion>1.2.1</InformationalVersion>
+    <Version>1.3.0</Version>
+    <AssemblyVersion>1.3.0.0</AssemblyVersion>
+    <FileVersion>1.3.0.0</FileVersion>
+    <InformationalVersion>1.3.0</InformationalVersion>
     <Product>TimePoker — Cronômetro de Torneio</Product>
     <Authors>Carlos Seidl</Authors>
     <Company>Seidl Software Ltda</Company>

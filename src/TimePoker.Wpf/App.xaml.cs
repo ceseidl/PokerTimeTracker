@@ -58,24 +58,34 @@ public partial class App : System.Windows.Application
         var sessao = new SessionStore();
         var estadoSalvo = sessao.Carregar();
 
-        // Se há uma sessão pendente, oferece restaurar
+        // Recovery: se havia rodada Rodando/Pausada, retoma automaticamente
+        // (descontando o tempo offline se estava Rodando). Se só Aguardando,
+        // ignora — não vale a pena pedir restauração de torneio nunca iniciado.
         SessionState? aRestaurar = null;
-        if (estadoSalvo != null && estadoSalvo.Estrutura.Niveis.Count > 0)
+        if (estadoSalvo != null
+            && estadoSalvo.Estrutura.Niveis.Count > 0
+            && estadoSalvo.Estado != EstadoTorneio.Aguardando
+            && estadoSalvo.Estado != EstadoTorneio.Encerrado)
         {
-            var idade = DateTime.UtcNow - estadoSalvo.UltimaAtualizacao;
-            var detalhe = $"Última atualização: {Formatar(idade)} atrás\n" +
-                          $"Torneio: {estadoSalvo.NomeTorneio}\n" +
-                          $"Nível: {estadoSalvo.IndiceNivelAtual + 1} de {estadoSalvo.Estrutura.Niveis.Count}\n" +
-                          $"Tempo restante: {(int)estadoSalvo.TempoRestante.TotalMinutes:D2}:{estadoSalvo.TempoRestante.Seconds:D2}\n" +
-                          $"Jogadores: {estadoSalvo.Jogadores}  ·  Rebuys: {estadoSalvo.Rebuys}";
-
-            var resp = MessageBox.Show(
-                "Encontramos uma sessão anterior.\n\n" + detalhe + "\n\nDeseja restaurar?",
-                "TimePoker — Recovery",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-            if (resp == MessageBoxResult.Yes) aRestaurar = estadoSalvo;
-            else sessao.Limpar();
+            if (estadoSalvo.Estado == EstadoTorneio.Rodando)
+            {
+                // Desconta o tempo offline do restante e soma ao decorrido total
+                // — o cronômetro "continuou virtualmente" enquanto fechado.
+                // Se passou do tempo do nível, clipa em zero (usuário avança manualmente).
+                var offline = DateTime.UtcNow - estadoSalvo.UltimaAtualizacao;
+                if (offline < TimeSpan.Zero) offline = TimeSpan.Zero;
+                var consumido = offline > estadoSalvo.TempoRestante
+                    ? estadoSalvo.TempoRestante
+                    : offline;
+                estadoSalvo.TempoRestante -= consumido;
+                estadoSalvo.TempoTotalDecorrido += consumido;
+            }
+            aRestaurar = estadoSalvo;
+        }
+        else if (estadoSalvo != null)
+        {
+            // Sessão sem partida em andamento — descarta pra começar limpo.
+            sessao.Limpar();
         }
 
         // Default da Liga: estrutura "Inimigos do Royal Flush" (6 níveis 20min + 2 breaks).
@@ -84,7 +94,21 @@ public partial class App : System.Windows.Application
 
         var control = new ControlWindow { DataContext = Vm };
         MainWindow = control;
-        control.Closed += (_, _) => Shutdown();
+        control.Closed += (_, _) =>
+        {
+            // Salva snapshot final pra retomada no próximo boot — o estado
+            // em memória do VM é a fonte da verdade, não o auto-save velho.
+            // Se estava Aguardando/Encerrado, limpa para boot limpo.
+            try
+            {
+                if (Vm.Estado == EstadoTorneio.Rodando || Vm.Estado == EstadoTorneio.Pausado)
+                    Vm.ForcarSalvarSessao();
+                else
+                    sessao.Limpar();
+            }
+            catch { /* best-effort */ }
+            Shutdown();
+        };
         control.Show();
 
         var display = new DisplayWindow { DataContext = Vm };

@@ -27,7 +27,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     /// <summary>Intervalo do auto-save periódico (default: 1 min).</summary>
     public static TimeSpan AutoSaveInterval { get; set; } = TimeSpan.FromMinutes(1);
 
-    [ObservableProperty] private string _nomeTorneio = "Saturday Night Poker";
+    [ObservableProperty] private string _nomeTorneio = "Poker Night";
 
     // Reflexo das propriedades do domain (atualizadas a cada tick)
     [ObservableProperty] private string _tempoRestanteFormatado = "00:00";
@@ -95,6 +95,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
             _cronometro.Restaurar(restaurar.IndiceNivelAtual,
                                    restaurar.TempoRestante,
                                    restaurar.Estado);
+            _cronometro.RestaurarDecorrido(restaurar.TempoTotalDecorrido);
         }
 
         // Bridge: recebe Jogadores/Rebuys/BuyIn/ValorRebuy do gerenciador.
@@ -326,6 +327,9 @@ public partial class MainViewModel : ObservableObject, IDisposable
         SalvarSessao();
     }
 
+    /// <summary>Força um snapshot da sessão. Usado no fechamento gracioso.</summary>
+    public void ForcarSalvarSessao() => SalvarSessao();
+
     private void SalvarSessao()
     {
         try
@@ -336,6 +340,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
                 Estrutura = _torneio.Estrutura,
                 IndiceNivelAtual = _torneio.IndiceNivelAtual,
                 TempoRestante = _cronometro.Restante,
+                TempoTotalDecorrido = _cronometro.Decorrido,
                 Estado = _cronometro.Estado,
                 Jogadores = _torneio.Jogadores,
                 Rebuys = _torneio.Rebuys
