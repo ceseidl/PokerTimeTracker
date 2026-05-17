@@ -8,7 +8,7 @@
 
   <Package Name="TimePoker"
            Manufacturer="Seidl Software Ltda"
-           Version="1.2.0.0"
+           Version="1.2.1.0"
            UpgradeCode="7B14F6E2-3A5C-4DA8-9C71-5E3F2A8B6D44"
            Scope="perMachine"
            Compressed="yes"
@@ -55,16 +55,33 @@
                        KeyPath="yes" />
       </Component>
 
+      <!-- Manual em DOCX — direcionado ao usuário final (linguagem simples). -->
       <Component Id="StartMenuManual" Guid="B2F3C4D5-6E7F-489A-AABC-FEF112345678">
         <Shortcut Id="StartMenuManualLink"
                   Name="Manual do Usuário"
-                  Description="Manual completo do TimePoker"
-                  Target="[INSTALLFOLDER]docs\MANUAL.html"
+                  Description="Manual do usuário (download, instalação e uso)"
+                  Target="[INSTALLFOLDER]docs\Manual_Usuario.docx"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="AppIcon.ico" />
         <RegistryValue Root="HKCU"
                        Key="Software\SeidlSoftware\TimePoker"
                        Name="manualShortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <!-- Manual técnico (HTML) — fica disponível pra consulta no navegador. -->
+      <Component Id="StartMenuManualHtml" Guid="D4E5F6A7-8B9C-49AD-BCDE-AFE412345678">
+        <Shortcut Id="StartMenuManualHtmlLink"
+                  Name="Manual Técnico (HTML)"
+                  Description="Manual técnico completo"
+                  Target="[INSTALLFOLDER]docs\MANUAL.html"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\SeidlSoftware\TimePoker"
+                       Name="manualHtmlShortcut"
                        Type="integer"
                        Value="1"
                        KeyPath="yes" />
@@ -93,6 +110,7 @@
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="StartMenuShortcut" />
       <ComponentRef Id="StartMenuManual" />
+      <ComponentRef Id="StartMenuManualHtml" />
       <ComponentRef Id="DesktopShortcut" />
     </Feature>
 

@@ -7,6 +7,17 @@ versionamento [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [1.2.1] — 2026-05-16
+
+### Adicionado
+- **Manual_Usuario.docx** empacotado no MSI — manual em linguagem simples
+  (download, instalação, primeira execução, operação) para o usuário final.
+- **Atalho "Manual do Usuário"** no menu Iniciar abre o docx.
+- **Atalho "Manual Técnico (HTML)"** no menu Iniciar para o manual completo
+  com screenshots no navegador.
+
+---
+
 ## [1.2.0] — 2026-05-16
 
 ### Adicionado
