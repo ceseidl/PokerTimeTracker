@@ -42,6 +42,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty] private int _prizePool;
     [ObservableProperty] private EstadoTorneio _estado = EstadoTorneio.Aguardando;
     [ObservableProperty] private string _tempoAteProximoBreakFormatado = "—";
+    [ObservableProperty] private string _tempoTotalDecorridoFormatado = "00:00";
 
     /// <summary>Lista observável de todos os níveis da estrutura (com status visual).</summary>
     public ObservableCollection<NivelLinhaViewModel> Niveis { get; } = new();
@@ -49,6 +50,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private readonly SessionStore _sessao;
     private readonly AlarmeService _alarme;
     private readonly BridgeWatcher _bridge;
+    private readonly TimerStatusWriter _statusWriter = new();
 
     /// <summary>Liga/desliga o alarme de fim de nível.</summary>
     [ObservableProperty] private bool _alarmeHabilitado = true;
@@ -184,6 +186,47 @@ public partial class MainViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand] private void TestarAlarme() => _ = _alarme.TocarAsync();
+
+    /// <summary>
+    /// Empurra o tempo total decorrido (somando todos os níveis jogados) para o
+    /// gerenciador via <c>timer-status.json</c>. Não finaliza a rodada lá —
+    /// apenas informa quanto tempo durou. Pausa o cronômetro como cortesia
+    /// visual; o usuário pode continuar depois se for o caso.
+    /// </summary>
+    [RelayCommand]
+    private void FinalizarRodada()
+    {
+        try
+        {
+            _statusWriter.Escrever(
+                _cronometro.Decorrido,
+                _torneio.IndiceNivelAtual + 1,
+                _cronometro.Estado.ToString());
+        }
+        catch
+        {
+            // Best-effort: se não conseguiu gravar (sem permissão, disco cheio etc.),
+            // não bloqueia o usuário. Próximo clique tenta de novo.
+        }
+
+        if (_cronometro.Estado == EstadoTorneio.Rodando)
+        {
+            _cronometro.Pausar();
+            _ticker.Stop();
+            _autoSaveTimer.Stop();
+            AtualizarPropriedades();
+        }
+
+        System.Windows.MessageBox.Show(
+            $"Tempo total enviado ao gerenciador:\n\n{FormatarHMS(_cronometro.Decorrido)}",
+            "TimePoker — Finalizar",
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Information);
+    }
+
+    /// <summary>Formata um TimeSpan como HH:MM:SS — usado no display e no toast de finalizar.</summary>
+    private static string FormatarHMS(TimeSpan t) =>
+        $"{(int)t.TotalHours:D2}:{t.Minutes:D2}:{t.Seconds:D2}";
 
     [RelayCommand]
     private void ImportarPokerInimigos()
@@ -359,7 +402,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         var ult = _torneio.Estrutura.Niveis.LastOrDefault(n => !n.EhBreak());
         var sb = ult != null ? ult.BigBlind : 25;
         var bb = ult != null ? ult.BigBlind * 2 : 50;
-        var dur = ult != null ? (int)ult.Duracao.TotalMinutes : 15;
+        var dur = ult != null ? (int)ult.Duracao.TotalMinutes : 20;
         _torneio.Estrutura.Niveis.Add(Nivel.DeJogo(sb, bb, dur));
         ReconstruirListaNiveis();
         AposAcao();
@@ -446,6 +489,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
         PrizePool      = _torneio.CalcularPrizePool();
         Estado         = _cronometro.Estado;
         TempoAteProximoBreakFormatado = CalcularTempoAteProximoBreak();
+        TempoTotalDecorridoFormatado = FormatarHMS(_cronometro.Decorrido);
         AtualizarStatusListaNiveis();
     }
 

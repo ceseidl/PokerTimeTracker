@@ -70,6 +70,28 @@ public static class PreSets
         }
     };
 
+    /// <summary>
+    /// Estrutura padrão dos torneios da Liga Inimigos do Royal Flush:
+    /// 6 níveis de 20 min com 2 breaks. Blinds começam em 50/100 e dobram a
+    /// cada nível até 2000/3000.
+    /// </summary>
+    public static Estrutura InimigosRoyalFlush() => new()
+    {
+        Nome = "Inimigos do Royal Flush",
+        BuyIn = 50, ValorRebuy = 50,
+        Niveis =
+        {
+            Nivel.DeJogo(   50,  100, 20),
+            Nivel.DeJogo(  100,  200, 20),
+            Nivel.DeJogo(  200,  400, 20),
+            Nivel.DeBreak(10),
+            Nivel.DeJogo(  500, 1000, 20),
+            Nivel.DeJogo( 1000, 2000, 20),
+            Nivel.DeJogo( 2000, 3000, 20),
+            Nivel.DeBreak(10, "BREAK FINAL"),
+        }
+    };
+
     /// <summary>Estrutura vazia para edição manual do zero.</summary>
     public static Estrutura Customizada() => new()
     {
@@ -80,5 +102,5 @@ public static class PreSets
 
     /// <summary>Lista todos os pré-sets disponíveis (útil pra montar combo na UI).</summary>
     public static IReadOnlyList<Func<Estrutura>> Todos() =>
-        new Func<Estrutura>[] { Turbo, Padrao, DeepStack, Customizada };
+        new Func<Estrutura>[] { Turbo, Padrao, DeepStack, InimigosRoyalFlush, Customizada };
 }

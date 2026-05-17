@@ -1,6 +1,6 @@
 # Manual do Usuário — TimePoker
 
-> Versão 1.0.0 · Cronômetro de torneios de poker ao vivo
+> Versão 1.2.0 · Cronômetro de torneios de poker ao vivo
 
 ---
 
@@ -13,11 +13,13 @@
 5. [Estruturas e pré-sets](#5-estruturas-e-pré-sets)
 6. [Jogadores, rebuys e prize pool](#6-jogadores-rebuys-e-prize-pool)
 7. [Importar do PokerInimigos](#7-importar-do-pokerinimigos)
-8. [Alarme](#8-alarme)
-9. [Auto-recovery](#9-auto-recovery)
-10. [Atalhos de teclado](#10-atalhos-de-teclado)
-11. [Arquivos e pastas](#11-arquivos-e-pastas)
-12. [Solução de problemas](#12-solução-de-problemas)
+8. [Integração com o gerenciador (bridge)](#8-integração-com-o-gerenciador-bridge)
+9. [Finalizar rodada — enviar tempo total](#9-finalizar-rodada)
+10. [Alarme](#10-alarme)
+11. [Auto-recovery](#11-auto-recovery)
+12. [Atalhos de teclado](#12-atalhos-de-teclado)
+13. [Arquivos e pastas](#13-arquivos-e-pastas)
+14. [Solução de problemas](#14-solução-de-problemas)
 
 ---
 
@@ -40,14 +42,14 @@ Se o app detectar uma **sessão anterior**, ele pergunta se quer **restaurar**
 ## 3. Janela de Controle
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│ [logo]  TimePoker — Cronômetro      Nome do torneio: [_] │
-├──────────────────────────────────────────────────────────┤
-│  TEMPO     NÍVEL      BLINDS         PRIZE POOL  ESTADO  │
-│  20:00     1 / 12     100 / 200      R$ 1.200    PAUSADO │
-├──────────────────────────────────────────────────────────┤
-│  ◀ Anterior │ ▶ Iniciar │ Próximo ▶ │ -1min │ +1min │ ⟲  │
-├──────────────────────────────────────────────────────────┤
+┌────────────────────────────────────────────────────────────────────┐
+│ [logo]  TimePoker — Cronômetro      Nome do torneio: [_]           │
+├────────────────────────────────────────────────────────────────────┤
+│  TEMPO   NÍVEL   BLINDS      PRIZE POOL  ESTADO   DECORRIDO        │
+│  20:00   1/12    50 / 100    R$ 700      PAUSADO  00:25:13         │
+├────────────────────────────────────────────────────────────────────┤
+│  ◀ Ant │ ▶ Iniciar │ Próx ▶ │ -1min │ +1min │ ⟲ Reset │ 🏁 Final   │
+├────────────────────────────────────────────────────────────────────┤
 │  JOGADORES: [- 8 +]   📥 Importar PokerInimigos          │
 │  REBUYS:    [- 3 +]                                      │
 ├──────────────────────────────────────────────────────────┤
@@ -72,7 +74,8 @@ Se o app detectar uma **sessão anterior**, ele pergunta se quer **restaurar**
 | **▶ Iniciar / ⏸ Pausar** | Liga/pausa o tick do cronômetro |
 | **◀ Anterior / Próximo ▶** | Pula para o nível anterior/próximo |
 | **−1min / +1min** | Ajuste fino do tempo do nível atual |
-| **⟲ Reset** | Volta ao nível 1 com tempo cheio |
+| **⟲ Reset** | Volta ao nível 1 com tempo cheio (zera o DECORRIDO) |
+| **🏁 Finalizar** | Envia o tempo total da partida ao gerenciador (veja §9) |
 | **+/− Jogadores** | Ajusta contador de jogadores |
 | **+/− Rebuys** | Ajusta contador de rebuys |
 
@@ -94,22 +97,32 @@ Janela limpa, fonte gigante, alto contraste:
 - Nível atual (X / Total)
 - Blinds e ante
 - Sidebar com KPIs: jogadores, rebuys, prize pool, tempo até o próximo break
-- Botões discretos: Anterior / Próximo
+
+**Controles discretos no canto superior direito** (semitransparentes; passe o
+mouse para destacar) — úteis quando o anfitrião tem **só uma tela** e quer
+operar sem alternar para a janela de Controle:
+- `⏯` — Iniciar / Pausar
+- `🏁 Finalizar` — envia o tempo total da partida ao gerenciador
 
 **F11** — entra/sai fullscreen
 **Esc** — sai do fullscreen
+**Espaço** — Iniciar / Pausar
 **Botão "Display ⛶"** no controle — detecta segundo monitor e joga lá
 
 ## 5. Estruturas e pré-sets
 
-Quatro pré-sets prontos:
+Cinco pré-sets prontos:
 
 | Pré-set | Duração | Características |
 |---|---|---|
 | **Turbo** | 10 min/nível | Curtos, blinds sobem rápido, p/ noites curtas |
-| **Padrão** | 20 min/nível | Equilibrado |
-| **Deep Stack** | 30 min/nível | Estruturas longas, jogo profundo |
+| **Padrão** | 15–20 min/nível | Equilibrado (≈3h) |
+| **Deep Stack** | 30 min/nível | Estruturas longas, jogo profundo (≈4h+) |
+| **Inimigos do Royal Flush** | 20 min/nível | Estrutura oficial da Liga (default ao abrir) — 6 níveis + 2 breaks: 50/100 → 100/200 → 200/400 → **BREAK** → 500/1000 → 1000/2000 → 2000/3000 → **BREAK FINAL** |
 | **Vazia** | — | Você monta do zero |
+
+> Novos níveis adicionados na grade (botão **+ Nível**) já vêm com **20 min**
+> de duração por padrão. Ajuste depois se quiser.
 
 ### Editor
 
@@ -147,7 +160,54 @@ clique em **📥 Importar PokerInimigos**:
 
 Se o arquivo não for encontrado, abre um seletor manual.
 
-## 8. Alarme
+## 8. Integração com o gerenciador (bridge)
+
+Quando o **Inimigos do Royal Flush** (gerenciador) está instalado na mesma
+máquina, os dois apps trocam dados automaticamente via arquivos JSON em
+`%APPDATA%\TimePoker\`:
+
+### Gerenciador → Timer  (`bridge.json`)
+
+Ao **Salvar Rascunho** ou **Finalizar Rodada** no gerenciador, ele grava o
+estado atual: quantidade de presentes, soma de rebuys, valores do esquema
+(buy-in + reserva).
+
+O TimePoker observa o arquivo via `FileSystemWatcher` e atualiza **em tempo
+real** — você não precisa recarregar nada:
+
+- **Jogadores** ← número de "Presentes" na rodada
+- **Rebuys**   ← soma da coluna Rebuys
+- **BuyIn**    ← `Esquema.EntradaTotal` (Padrão = R$50, Campeonato = R$70)
+- **ValorRebuy** ← `Esquema.RebuyTotal`
+
+O **prize pool** se recalcula sozinho. Se o gerenciador não está rodando,
+o timer continua funcionando normal — integração é best-effort.
+
+### Timer → Gerenciador  (`timer-status.json`)
+
+Veja [§9 Finalizar rodada](#9-finalizar-rodada).
+
+## 9. Finalizar rodada
+
+O botão **🏁 Finalizar** (presente tanto no Painel de Controle quanto no
+canto do Display) faz duas coisas:
+
+1. **Pausa** o cronômetro (cortesia visual — você ainda pode continuar).
+2. **Grava** `%APPDATA%\TimePoker\timer-status.json` com o tempo total
+   decorrido (`HH:MM:SS`), nível atual e estado.
+
+> **Não finaliza a rodada no gerenciador.** Só informa quanto tempo durou.
+> No gerenciador, abra o cadastro da rodada e clique **↻ Importar do timer**
+> para puxar esse valor — ele entra na planilha (célula E8) e aparece no
+> KPI "Duração" do relatório `etapa-NN.html`.
+
+O gerenciador pode estar **fechado** quando você clica 🏁 — o arquivo fica
+salvo até a próxima sobrescrita.
+
+O contador **DECORRIDO** no Painel de Controle mostra esse mesmo tempo em
+tempo real (HH:MM:SS). Pauses **não contam**.
+
+## 10. Alarme
 
 A cada virada de nível, toca **3 beeps**.
 
@@ -160,7 +220,7 @@ A cada virada de nível, toca **3 beeps**.
 > em *Configurações › Sistema › Som › Saída*. Seleção de dispositivo
 > específico está no backlog.
 
-## 9. Auto-recovery
+## 11. Auto-recovery
 
 O app salva um snapshot da sessão:
 
@@ -175,7 +235,7 @@ Ao reabrir o app, se houver snapshot válido, ele pergunta:
 > Por segurança, o estado **Rodando** sempre volta como **Pausado** —
 > você confirma manualmente que quer retomar.
 
-## 10. Atalhos de teclado
+## 12. Atalhos de teclado
 
 ### Janela Display
 | Tecla | Ação |
@@ -184,19 +244,23 @@ Ao reabrir o app, se houver snapshot válido, ele pergunta:
 | **Esc** | Sai do fullscreen |
 
 ### Janela Controle
-Os botões da interface são a interface oficial — sem atalhos globais
-para evitar disparos acidentais durante o jogo.
+| Tecla | Ação |
+|---|---|
+| **Espaço** | Iniciar / Pausar |
+| **←** / **→** | Nível anterior / próximo |
 
-## 11. Arquivos e pastas
+## 13. Arquivos e pastas
 
 | Caminho | O que é |
 |---|---|
 | `%APPDATA%\TimePoker\session.json` | Snapshot da sessão atual |
-| `%APPDATA%\TimePoker\structures\*.json` | Estruturas salvas |
+| `%APPDATA%\TimePoker\structures\*.json` | Estruturas salvas (inclui "Inimigos do Royal Flush" semeada no primeiro start) |
+| `%APPDATA%\TimePoker\bridge.json` | Estado da rodada empurrado pelo gerenciador |
+| `%APPDATA%\TimePoker\timer-status.json` | Tempo total da partida — gravado ao clicar 🏁 Finalizar |
 | `C:\Program Files\TimePoker\` | Instalação do app |
 | `C:\Program Files\TimePoker\docs\MANUAL.html` | Este manual (HTML) |
 
-## 12. Solução de problemas
+## 14. Solução de problemas
 
 ### "O alarme não toca"
 - Verifique o **🔔 Alarme** está marcado
@@ -218,6 +282,17 @@ para evitar disparos acidentais durante o jogo.
 ### "Os blinds saíram errados"
 - Verifique a coluna **Tipo** — se for **Break**, BB e SB são ignorados
 - Edite as células direto no DataGrid
+
+### "Cliquei Finalizar mas o gerenciador não pegou o tempo"
+- Verifique que existe `%APPDATA%\TimePoker\timer-status.json`
+- No gerenciador, abra o cadastro da rodada e clique **↻ Importar do timer**
+- Se mesmo assim não puxar, confira se o gerenciador é v1.4.0 ou superior
+
+### "Jogadores/Rebuys não atualizam quando salvo no gerenciador"
+- A integração precisa do gerenciador v1.3.0+
+- Verifique que `%APPDATA%\TimePoker\bridge.json` existe e foi atualizado
+  recentemente após o último Salvar Rascunho no gerenciador
+- O timer só lê quando o arquivo muda — primeira leitura é na inicialização
 
 ---
 

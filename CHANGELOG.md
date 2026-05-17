@@ -7,6 +7,33 @@ versionamento [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
+## [1.2.0] — 2026-05-16
+
+### Adicionado
+- **🏁 Botão Finalizar** no Painel de Controle e na janela Display (canto
+  superior direito, discreto). Grava o tempo total decorrido em
+  `%APPDATA%\TimePoker\timer-status.json` para o gerenciador consumir.
+  **Não fecha a rodada lá** — só informa quanto tempo durou. Pausa o
+  cronômetro como cortesia.
+- **Cronômetro de tempo total decorrido** (`Decorrido`). Acumula só
+  enquanto está rodando — pauses não contam. Exibido como KPI "DECORRIDO"
+  no Painel de Controle.
+- **Controles discretos no Display** (canto superior direito do header,
+  semitransparentes): `⏯` Iniciar/Pausar e `🏁` Finalizar. Útil quando o
+  anfitrião tem só uma tela.
+- **Pré-set "Inimigos do Royal Flush"** — estrutura oficial da Liga
+  (6 níveis 20min + 2 breaks: 50/100 → 100/200 → 200/400 → BREAK →
+  500/1000 → 1000/2000 → 2000/3000 → BREAK FINAL). Aplicada como default
+  ao abrir e semeada automaticamente em `%APPDATA%\TimePoker\structures\`.
+- **Manual.html autocontido** gerado por `installer/build-manual.py`
+  (mesmo modelo do gerenciador).
+
+### Alterado
+- **Default duration** de novos níveis adicionados via "+ Nível" passou de
+  15 para 20 min — mais alinhado com a estrutura padrão da Liga.
+
+---
+
 ## [1.1.0] — 2026-05-16
 
 ### Adicionado

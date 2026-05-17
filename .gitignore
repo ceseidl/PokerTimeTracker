@@ -46,6 +46,9 @@ installer/out/
 installer/publish/
 installer/HarvestedFiles.wxs
 
+# Manual HTML é gerado por installer/build-manual.py — não versionar.
+docs/MANUAL.html
+
 # OS
 Thumbs.db
 ehthumbs.db

@@ -44,7 +44,12 @@ if (-not $SkipPublish) {
     if ($LASTEXITCODE -ne 0) { throw "dotnet publish falhou (exit $LASTEXITCODE)" }
 }
 
-# Inclui pasta docs/ com MANUAL.md (e MANUAL.html se existir)
+# Gera MANUAL.html a partir de MANUAL.md (autocontido, screenshots em base64).
+Write-Host "==> Gerando MANUAL.html..." -ForegroundColor Cyan
+& python (Join-Path $PSScriptRoot "build-manual.py")
+if ($LASTEXITCODE -ne 0) { throw "build-manual.py falhou (exit $LASTEXITCODE)" }
+
+# Inclui pasta docs/ com MANUAL.md e MANUAL.html
 $docsSrc = Join-Path $root "docs"
 $docsDst = Join-Path $publishDir "docs"
 if (Test-Path $docsSrc) {

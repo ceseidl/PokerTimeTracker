@@ -53,6 +53,8 @@ public partial class App : System.Windows.Application
 
     private void AbrirJanelasPrincipais()
     {
+        SemearEstruturasPadrao();
+
         var sessao = new SessionStore();
         var estadoSalvo = sessao.Carregar();
 
@@ -76,7 +78,9 @@ public partial class App : System.Windows.Application
             else sessao.Limpar();
         }
 
-        Vm = new MainViewModel(PreSets.Padrao(), aRestaurar, sessao);
+        // Default da Liga: estrutura "Inimigos do Royal Flush" (6 níveis 20min + 2 breaks).
+        // Quando há sessão salva, ela já vem com a estrutura usada na noite anterior.
+        Vm = new MainViewModel(PreSets.InimigosRoyalFlush(), aRestaurar, sessao);
 
         var control = new ControlWindow { DataContext = Vm };
         MainWindow = control;
@@ -86,6 +90,23 @@ public partial class App : System.Windows.Application
         var display = new DisplayWindow { DataContext = Vm };
         display.Owner = control;
         display.Show();
+    }
+
+    /// <summary>
+    /// Garante que as estruturas pré-prontas oficiais da Liga existam em
+    /// <c>%APPDATA%\TimePoker\structures\</c>. Idempotente: só grava se ainda
+    /// não houver arquivo com aquele nome — não sobrescreve customizações.
+    /// </summary>
+    private static void SemearEstruturasPadrao()
+    {
+        var store = new EstruturaStore();
+        var existentes = store.Listar();
+        const string nomeSeed = "Inimigos do Royal Flush";
+        if (!existentes.Contains(nomeSeed, StringComparer.OrdinalIgnoreCase))
+        {
+            try { store.Salvar(nomeSeed, PreSets.InimigosRoyalFlush()); }
+            catch { /* best-effort */ }
+        }
     }
 
     private static string Formatar(TimeSpan idade)

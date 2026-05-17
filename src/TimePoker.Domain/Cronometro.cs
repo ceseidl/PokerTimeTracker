@@ -11,6 +11,7 @@ public sealed class Cronometro
 {
     private readonly Torneio _torneio;
     private TimeSpan _restante;
+    private TimeSpan _decorrido;
     private EstadoTorneio _estado = EstadoTorneio.Aguardando;
 
     public Cronometro(Torneio torneio)
@@ -21,6 +22,11 @@ public sealed class Cronometro
 
     public EstadoTorneio Estado => _estado;
     public TimeSpan Restante => _restante < TimeSpan.Zero ? TimeSpan.Zero : _restante;
+    /// <summary>
+    /// Tempo total que o cronômetro ficou rodando (soma dos Ticks no estado Rodando).
+    /// Pauses não contam. Usado para reportar a duração real da rodada ao gerenciador.
+    /// </summary>
+    public TimeSpan Decorrido => _decorrido;
     public Torneio Torneio => _torneio;
 
     /// <summary>Disparado quando o tempo do nível chega a zero (depois de avançar o nível).</summary>
@@ -54,6 +60,7 @@ public sealed class Cronometro
     {
         if (_estado != EstadoTorneio.Rodando) return;
 
+        _decorrido += delta;
         _restante -= delta;
         if (_restante > TimeSpan.Zero) return;
 
@@ -91,6 +98,7 @@ public sealed class Cronometro
     {
         _torneio.IrParaNivel(0);
         _estado = EstadoTorneio.Aguardando;
+        _decorrido = TimeSpan.Zero;
         ResetarTempoDoNivel();
     }
 
