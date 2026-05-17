@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TimePoker.Domain\TimePoker.Domain.csproj" />
+    <ProjectReference Include="..\..\src\TimePoker.Services\TimePoker.Services.csproj" />
   </ItemGroup>
 
 </Project>

@@ -42,10 +42,11 @@ public sealed class BridgeWatcher : IDisposable
 
     public event Action<BridgeSnapshot>? SnapshotRecebido;
 
-    public BridgeWatcher()
+    public BridgeWatcher(string? caminhoCustom = null)
     {
-        var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        _arquivo = Path.Combine(appData, "TimePoker", "bridge.json");
+        _arquivo = caminhoCustom ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "TimePoker", "bridge.json");
 
         var pasta = Path.GetDirectoryName(_arquivo)!;
         Directory.CreateDirectory(pasta);

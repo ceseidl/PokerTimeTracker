@@ -29,10 +29,11 @@ public sealed class TimerStatusWriter
 
     private readonly string _arquivo;
 
-    public TimerStatusWriter()
+    public TimerStatusWriter(string? caminhoCustom = null)
     {
-        var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        _arquivo = Path.Combine(appData, "TimePoker", "timer-status.json");
+        _arquivo = caminhoCustom ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "TimePoker", "timer-status.json");
     }
 
     public string Arquivo => _arquivo;
